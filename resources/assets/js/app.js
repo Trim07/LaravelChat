@@ -17,7 +17,8 @@ window.Vue = require('vue');
 
 require('./bootstrap');
 
-Vue.component('chat-conversations', require('./components/ChatList.vue'));
+Vue.component('chat-conversations', require('./components/ChatListConversations.vue'));
+Vue.component('chat-conversations-item', require('./components/ChatConversationItem.vue'));
 Vue.component('chat-list-users', require('./components/ChatListUsers.vue'));
 Vue.component('chat-messages', require('./components/ChatMessages.vue'));
 Vue.component('chat-form', require('./components/ChatForm.vue'));
@@ -26,7 +27,7 @@ const app = new Vue({
     el: '#app',
 
     data: {
-        chats: [],
+        conversations: [],
         messages: [],
         currentComponent: 'chat-conversations',
     },
@@ -45,9 +46,9 @@ const app = new Vue({
 
     methods: {
         fetchChats(){
-            axios.get('/chats').then(response => {
-                console.log(response)
-                // this.messages = response.data;
+            axios.get('/conversations').then(response => {
+                console.log(response.data.conversations)
+                this.conversations = response.data.conversations;
             });
         },
         fetchMessages() {

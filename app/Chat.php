@@ -18,11 +18,17 @@ class Chat extends Model
      */
     public function participants()
     {
-        return $this->belongsTo(ChatParticipants::class);
+        return $this->belongsTo(ChatParticipants::class, 'id', 'chatId');
     }
     public function messages()
     {
-        return $this->belongsTo(ChatMessages::class);
+        return $this->belongsTo(ChatMessages::class, 'chatId', 'id');
+    }
+
+    public function last_message()
+    {
+        return $this->hasOne(ChatMessages::class, 'chatId', 'id')
+            ->orderBy('chat_messages.id', 'desc');
     }
 
 
