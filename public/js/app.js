@@ -1501,8 +1501,8 @@ var app = new Vue({
     created: function created() {
         var _this = this;
 
-        this.fetchChats();
-        this.fetchMessages();
+        this.fetchConversations();
+        // this.fetchMessages();
         Echo.private('chat').listen('.messagesent', function (e) {
             _this.messages.push({
                 message: e.message.message,
@@ -1513,20 +1513,35 @@ var app = new Vue({
 
 
     methods: {
-        fetchChats: function fetchChats() {
+        fetchConversations: function fetchConversations() {
             var _this2 = this;
 
             axios.get('/conversations').then(function (response) {
-                console.log(response.data.conversations);
                 _this2.conversations = response.data.conversations;
             });
         },
-        fetchMessages: function fetchMessages() {
+        fetchMessages: function fetchMessages(chatId) {
             var _this3 = this;
 
-            axios.get('/messages').then(function (response) {
-                // console.log(response)
-                _this3.messages = response.data;
+            axios.get('/messages', { params: { 'chatId': chatId } }).then(function (response) {
+                if (Object.keys(response.data).length > 0) {
+                    var messages = response.data.messages[0].messages;
+                    for (var i = 0; i < Object.keys(messages).length; i++) {
+                        console.log(messages[i]);
+                        _this3.messages.push({
+                            message: messages[i].message,
+                            user: {
+                                'id': messages[i].chatParticipantId,
+                                'name': messages[i].name
+                            }
+                        });
+                    }
+                    // $.each(response.data.messages[0].messsages, function (index, data){
+                    //     console.log(this)
+                    // });
+                    console.log(_this3.messages);
+                    // this.messages = response.data.messages[0];
+                }
             });
         },
         addMessage: function addMessage(message) {
@@ -1540,8 +1555,11 @@ var app = new Vue({
 
         swapComponent: function swapComponent(component) {
             this.currentComponent = component;
-        }
+        },
 
+        openConversation: function openConversation(id) {
+            this.fetchMessages(id);
+        }
     }
 });
 
@@ -51870,7 +51888,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -51934,6 +51952,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     swapToListUsersComponent: function swapToListUsersComponent() {
       this.$emit('swap', 'chat-list-users');
+    },
+    openConversation: function openConversation(id) {
+      this.$emit('openconversation', id);
     }
   }
 });
@@ -51967,7 +51988,8 @@ var render = function() {
             "div",
             [
               _c("chat-conversations-item", {
-                attrs: { conversation: conversation }
+                attrs: { conversation: conversation },
+                on: { openconversation: _vm.openConversation }
               })
             ],
             1
@@ -52083,7 +52105,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -52110,7 +52132,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['conversation']
+  props: ['conversation'],
+  methods: {
+    openConversation: function openConversation(id) {
+      this.$emit('openconversation', id);
+    }
+  }
 });
 
 /***/ }),
@@ -52125,7 +52152,12 @@ var render = function() {
     "div",
     {
       staticClass: "media",
-      staticStyle: { border: "1px solid gray", padding: "10px" }
+      staticStyle: { border: "1px solid gray", padding: "10px" },
+      on: {
+        click: function($event) {
+          return _vm.openConversation(_vm.conversation.id)
+        }
+      }
     },
     [
       _vm._m(0),
@@ -52486,11 +52518,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['messages']
+  props: ['messages', 'user'],
+  mounted: function mounted() {
+    console.log(this.user);
+  }
 });
 
 /***/ }),
@@ -52506,15 +52539,22 @@ var render = function() {
     { staticClass: "chat" },
     _vm._l(_vm.messages, function(message) {
       return _c("li", { staticClass: "left clearfix" }, [
-        _c("div", { staticClass: "chat-body clearfix" }, [
-          _c("div", { staticClass: "header" }, [
-            _c("strong", { staticClass: "primary-font" }, [
-              _vm._v("\n          " + _vm._s(message.user.name) + "\n        ")
+        _c(
+          "div",
+          {
+            staticClass: "chat-body",
+            class: { "pull-right; text-right": _vm.user.id == message.user.id }
+          },
+          [
+            _c("p", [_c("strong", [_vm._v(_vm._s(message.user.name))])]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("p", [
+                _vm._v("\n          " + _vm._s(message.message) + "\n        ")
+              ])
             ])
-          ]),
-          _vm._v(" "),
-          _c("p", [_vm._v("\n        " + _vm._s(message.message) + "\n      ")])
-        ])
+          ]
+        )
       ])
     }),
     0

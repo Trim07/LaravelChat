@@ -5,14 +5,14 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <div :is="currentComponent" @swap="swapComponent" :conversations="conversations"></div>
+                <div :is="currentComponent" @swap="swapComponent" @openconversation="openConversation" :conversations="conversations"></div>
             </div>
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">Chats</div>
 
                     <div class="panel-body">
-                        <chat-messages :messages="messages"></chat-messages>
+                        <chat-messages :messages="messages" :user="{{ Auth::user() }}"></chat-messages>
                     </div>
                     <div class="panel-footer">
                         <chat-form

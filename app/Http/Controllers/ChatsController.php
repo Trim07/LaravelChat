@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Chat;
+use App\ChatMessages;
 use App\ChatParticipants;
 use App\Events\SendMessage;
 use Illuminate\Http\Request;
@@ -17,53 +18,77 @@ class ChatsController extends Controller
 
     public function index()
     {
-        $chats = Chat::get();
         return view('chat');
     }
     public function fetchConversations()
     {
-        $user = Auth::user();
-        $chat_participations = ChatParticipants::select('chatId')->where('userId', $user->id)->get();
-        $conversations = Chat::with(['participants' => function($query)use($user) {
-            $query->join('users', 'users.id', '=', 'chat_participants.userId')
-                ->select('chat_participants.*', 'users.name')
-                ->where('users.id', '!=', $user->id)->get();
-        }, 'last_message'])->whereIn('id', $chat_participations->pluck('chatId'))->get();
+        try {
+            $user = Auth::user();
+            $chat_participations = ChatParticipants::select('chatId')->where('userId', $user->id)->get();
+            $conversations = Chat::with(['participants' => function($query)use($user) {
+                $query->join('users', 'users.id', '=', 'chat_participants.userId')
+                    ->select('chat_participants.*', 'users.name')
+                    ->where('users.id', '!=', $user->id)->get();
+            }, 'last_message'])->whereIn('id', $chat_participations->pluck('chatId'))->get();
 
-        return compact('conversations');
+            return compact('conversations');
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
     }
 
-    public function fetchMessages()
+    public function fetchMessages(Request $request)
     {
-        return Chat::with(['participations', 'messages'])->get();
+        try {
+            $messages = Chat::with(['participants' => function($query) {
+                    $query->join('users', 'users.id', '=', 'chat_participants.userId')
+                            ->select('chat_participants.*', 'users.name')->get();
+                    }, 'messages' => function($query) {
+                        $query->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
+                            ->select('chat_messages.*', 'users.name')->get();
+                    }])
+                ->where('id', $request->get('chatId'))->get();
+
+//            $messages = ChatMessages::with('participants')
+//                ->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
+//                ->where('chatId', $request->get('chatId'))->get();
+            return compact('messages');
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
     }
 
 
     public function createConversation(Request $request){
 
-        $user = Auth::user();
-        $conversation = Chat::create();
-        ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $user->id]);
-        ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $request->get('userId')]);
-        return [];
+        try {
+            $user = Auth::user();
+            $conversation = Chat::create();
+            ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $user->id]);
+            ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $request->get('userId')]);
+            return [];
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
     }
 
     public function sendMessage(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $message = $user->messages()->create([
-            'type' => "text",
-            'chatParticipantId' => $user->id,
-            'chatId' => $request->input('chatId'),
-            'message' => $request->input('message')
-        ]);
+            $message = $user->messages()->create([
+                'type' => "text",
+                'chatParticipantId' => $user->id,
+                'chatId' => $request->input('chatId'),
+                'message' => $request->input('message')
+            ]);
 
-        broadcast(new SendMessage($user, $message))->toOthers();
+            broadcast(new SendMessage($user, $message))->toOthers();
 
-        return ['status' => 'Message Sent!'];
+            return ['status' => 'Message Sent!'];
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
     }
-
-
-
 }

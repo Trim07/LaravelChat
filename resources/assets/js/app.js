@@ -33,8 +33,8 @@ const app = new Vue({
     },
 
     created() {
-        this.fetchChats()
-        this.fetchMessages();
+        this.fetchConversations()
+        // this.fetchMessages();
         Echo.private('chat')
             .listen('.messagesent', (e) => {
                 this.messages.push({
@@ -45,16 +45,31 @@ const app = new Vue({
     },
 
     methods: {
-        fetchChats(){
+        fetchConversations(){
             axios.get('/conversations').then(response => {
-                console.log(response.data.conversations)
                 this.conversations = response.data.conversations;
             });
         },
-        fetchMessages() {
-            axios.get('/messages').then(response => {
-                // console.log(response)
-                this.messages = response.data;
+        fetchMessages(chatId) {
+            axios.get('/messages', {params: {'chatId': chatId}}).then(response => {
+                if(Object.keys(response.data).length > 0){
+                    let messages = response.data.messages[0].messages;
+                    for (let i = 0; i < Object.keys(messages).length; i++) {
+                        console.log(messages[i])
+                        this.messages.push({
+                            message: messages[i].message,
+                            user: {
+                                'id': messages[i].chatParticipantId,
+                                'name': messages[i].name
+                            },
+                        });
+                    }
+                    // $.each(response.data.messages[0].messsages, function (index, data){
+                    //     console.log(this)
+                    // });
+                    console.log(this.messages)
+                    // this.messages = response.data.messages[0];
+                }
             });
         },
 
@@ -68,6 +83,10 @@ const app = new Vue({
 
         swapComponent: function(component){
             this.currentComponent = component;
+        },
+
+        openConversation(id) {
+            this.fetchMessages(id);
         }
 
     }

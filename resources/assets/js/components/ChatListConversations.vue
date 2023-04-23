@@ -6,7 +6,7 @@
     <div class="panel-body">
       <button class="btn btn-primary" @click="swapToListUsersComponent">Nova conversa</button>
       <div v-for="conversation in conversations">
-        <chat-conversations-item :conversation="conversation"></chat-conversations-item>
+        <chat-conversations-item :conversation="conversation" @openconversation="openConversation"></chat-conversations-item>
       </div>
     </div>
   </div>
@@ -18,6 +18,9 @@ export default {
   methods: {
     swapToListUsersComponent() {
       this.$emit('swap', 'chat-list-users')
+    },
+    openConversation(id){
+      this.$emit('openconversation', id)
     }
   }
 }
