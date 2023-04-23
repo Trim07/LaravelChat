@@ -936,9 +936,9 @@ window._ = __webpack_require__(15);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(17);
+    window.$ = window.jQuery = __webpack_require__(17);
 
-  __webpack_require__(18);
+    __webpack_require__(18);
 } catch (e) {}
 
 /**
@@ -960,9 +960,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**
@@ -974,6 +974,10 @@ if (token) {
 // import Echo from 'laravel-echo'
 
 window.Pusher = __webpack_require__(38);
+
+Pusher.log = function (msg) {
+    console.log(msg);
+};
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
@@ -988,10 +992,10 @@ window.Pusher = __webpack_require__(38);
 
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
-  broadcaster: 'pusher',
-  key: "c6e057b928434d6c4662",
-  cluster: "sa1",
-  encrypted: true
+    broadcaster: 'pusher',
+    key: 'c6e057b928434d6c4662',
+    cluster: 'sa1',
+    encrypted: true
 });
 
 /***/ }),
@@ -1495,7 +1499,8 @@ var app = new Vue({
     data: {
         conversations: [],
         messages: [],
-        currentComponent: 'chat-conversations'
+        currentComponent: 'chat-conversations',
+        currentChatChannel: null
     },
 
     created: function created() {
@@ -1504,6 +1509,7 @@ var app = new Vue({
         this.fetchConversations();
         // this.fetchMessages();
         Echo.private('chat').listen('.messagesent', function (e) {
+            console.log(e);
             _this.messages.push({
                 message: e.message.message,
                 user: e.user
@@ -1527,7 +1533,6 @@ var app = new Vue({
                 if (Object.keys(response.data).length > 0) {
                     var messages = response.data.messages[0].messages;
                     for (var i = 0; i < Object.keys(messages).length; i++) {
-                        console.log(messages[i]);
                         _this3.messages.push({
                             message: messages[i].message,
                             user: {
@@ -1536,11 +1541,6 @@ var app = new Vue({
                             }
                         });
                     }
-                    // $.each(response.data.messages[0].messsages, function (index, data){
-                    //     console.log(this)
-                    // });
-                    console.log(_this3.messages);
-                    // this.messages = response.data.messages[0];
                 }
             });
         },
@@ -52543,7 +52543,7 @@ var render = function() {
           "div",
           {
             staticClass: "chat-body",
-            class: { "pull-right; text-right": _vm.user.id == message.user.id }
+            class: { "pull-right; text-right": _vm.user.id === message.user.id }
           },
           [
             _c("p", [_c("strong", [_vm._v(_vm._s(message.user.name))])]),

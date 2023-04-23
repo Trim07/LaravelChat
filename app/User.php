@@ -27,9 +27,14 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function chats()
+    public function conversations()
     {
-        return $this->hasMany(Chat::class);
+        return $this->belongsTo(ChatParticipants::class, 'id', 'userId')->with('conversations');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(ChatMessages::class, 'chatId', 'id');
     }
 
 }

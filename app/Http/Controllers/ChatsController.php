@@ -6,6 +6,7 @@ use App\Chat;
 use App\ChatMessages;
 use App\ChatParticipants;
 use App\Events\SendMessage;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +46,7 @@ class ChatsController extends Controller
                             ->select('chat_participants.*', 'users.name')->get();
                     }, 'messages' => function($query) {
                         $query->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
-                            ->select('chat_messages.*', 'users.name')->get();
+                            ->select('chat_messages.*', 'users.name')->orderBy('id', 'asc')->get();
                     }])
                 ->where('id', $request->get('chatId'))->get();
 

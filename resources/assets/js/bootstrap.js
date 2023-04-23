@@ -47,6 +47,10 @@ if (token) {
 
 window.Pusher = require('pusher-js');
 
+Pusher.log = function(msg) {
+    console.log(msg);
+};
+
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key',
@@ -61,7 +65,7 @@ import Echo from "laravel-echo"
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    key: 'c6e057b928434d6c4662',
+    cluster: 'sa1',
     encrypted: true
 });

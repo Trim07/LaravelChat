@@ -30,6 +30,7 @@ const app = new Vue({
         conversations: [],
         messages: [],
         currentComponent: 'chat-conversations',
+        currentChatChannel: null,
     },
 
     created() {
@@ -37,6 +38,7 @@ const app = new Vue({
         // this.fetchMessages();
         Echo.private('chat')
             .listen('.messagesent', (e) => {
+                console.log(e)
                 this.messages.push({
                     message: e.message.message,
                     user: e.user
@@ -55,7 +57,6 @@ const app = new Vue({
                 if(Object.keys(response.data).length > 0){
                     let messages = response.data.messages[0].messages;
                     for (let i = 0; i < Object.keys(messages).length; i++) {
-                        console.log(messages[i])
                         this.messages.push({
                             message: messages[i].message,
                             user: {
@@ -64,11 +65,6 @@ const app = new Vue({
                             },
                         });
                     }
-                    // $.each(response.data.messages[0].messsages, function (index, data){
-                    //     console.log(this)
-                    // });
-                    console.log(this.messages)
-                    // this.messages = response.data.messages[0];
                 }
             });
         },

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SendMessage
+class SendMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -36,5 +36,10 @@ class SendMessage
     public function broadcastOn()
     {
         return new PrivateChannel('chat');
+    }
+
+    public function broadcastAs()
+    {
+        return 'messagesent';
     }
 }
