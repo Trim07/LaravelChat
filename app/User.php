@@ -27,7 +27,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function conversations()
+    public function participatios()
     {
         return $this->belongsTo(ChatParticipants::class, 'id', 'userId')->with('conversations');
     }

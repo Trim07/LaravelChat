@@ -19,7 +19,7 @@
 export default {
   props: ['messages', 'user'],
   mounted() {
-    console.log(this.user);
+    console.log(this.messages);
   }
 };
 </script>

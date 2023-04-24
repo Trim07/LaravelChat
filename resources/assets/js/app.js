@@ -31,18 +31,19 @@ const app = new Vue({
         messages: [],
         currentComponent: 'chat-conversations',
         currentChatChannel: null,
+        conversationUser: null,
+        conversatioId: null,
     },
 
     created() {
         this.fetchConversations()
-        // this.fetchMessages();
         Echo.private('chat')
             .listen('.messagesent', (e) => {
-                console.log(e)
                 this.messages.push({
                     message: e.message.message,
                     user: e.user
                 });
+                this.fetchConversations();
             });
     },
 
@@ -52,10 +53,12 @@ const app = new Vue({
                 this.conversations = response.data.conversations;
             });
         },
-        fetchMessages(chatId) {
-            axios.get('/messages', {params: {'chatId': chatId}}).then(response => {
-                if(Object.keys(response.data).length > 0){
+        fetchMessages(chatId, userId) {
+            axios.get('/messages', {params: {'conversationId': chatId, 'userId': userId}}).then(response => {
+                console.log(response.data)
+                if(Object.keys(response.data.messages).length > 0 && response.data.messages[0].messages){
                     let messages = response.data.messages[0].messages;
+                    this.conversationUser = response.data.messages[0].participants[0].userId
                     for (let i = 0; i < Object.keys(messages).length; i++) {
                         this.messages.push({
                             message: messages[i].message,
@@ -70,10 +73,13 @@ const app = new Vue({
         },
 
         addMessage(message) {
+            message.conversationUser = this.conversationUser;
+            message.conversationId = this.conversatioId;
             this.messages.push(message);
 
             axios.post('/messages', message).then(response => {
                 console.log(response.data);
+                this.fetchConversations();
             });
         },
 
@@ -81,9 +87,10 @@ const app = new Vue({
             this.currentComponent = component;
         },
 
-        openConversation(id) {
-            this.fetchMessages(id);
-        }
-
+        openConversation(id = null, userId = null) {
+            this.conversationUser = userId;
+            this.conversatioId = id;
+            this.fetchMessages(id, userId);
+        },
     }
 });

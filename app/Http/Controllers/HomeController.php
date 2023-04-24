@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -31,6 +32,6 @@ class HomeController extends Controller
     }
 
     public function getUsers(){
-        return User::select('id', 'name')->get();
+        return User::select('id', 'name')->where('id', "!=", Auth::user()->id)->get();
     }
 }

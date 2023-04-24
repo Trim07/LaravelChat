@@ -1500,20 +1500,21 @@ var app = new Vue({
         conversations: [],
         messages: [],
         currentComponent: 'chat-conversations',
-        currentChatChannel: null
+        currentChatChannel: null,
+        conversationUser: null,
+        conversatioId: null
     },
 
     created: function created() {
         var _this = this;
 
         this.fetchConversations();
-        // this.fetchMessages();
         Echo.private('chat').listen('.messagesent', function (e) {
-            console.log(e);
             _this.messages.push({
                 message: e.message.message,
                 user: e.user
             });
+            _this.fetchConversations();
         });
     },
 
@@ -1526,12 +1527,14 @@ var app = new Vue({
                 _this2.conversations = response.data.conversations;
             });
         },
-        fetchMessages: function fetchMessages(chatId) {
+        fetchMessages: function fetchMessages(chatId, userId) {
             var _this3 = this;
 
-            axios.get('/messages', { params: { 'chatId': chatId } }).then(function (response) {
-                if (Object.keys(response.data).length > 0) {
+            axios.get('/messages', { params: { 'conversationId': chatId, 'userId': userId } }).then(function (response) {
+                console.log(response.data);
+                if (Object.keys(response.data.messages).length > 0 && response.data.messages[0].messages) {
                     var messages = response.data.messages[0].messages;
+                    _this3.conversationUser = response.data.messages[0].participants[0].userId;
                     for (var i = 0; i < Object.keys(messages).length; i++) {
                         _this3.messages.push({
                             message: messages[i].message,
@@ -1545,10 +1548,15 @@ var app = new Vue({
             });
         },
         addMessage: function addMessage(message) {
+            var _this4 = this;
+
+            message.conversationUser = this.conversationUser;
+            message.conversationId = this.conversatioId;
             this.messages.push(message);
 
             axios.post('/messages', message).then(function (response) {
                 console.log(response.data);
+                _this4.fetchConversations();
             });
         },
 
@@ -1557,8 +1565,13 @@ var app = new Vue({
             this.currentComponent = component;
         },
 
-        openConversation: function openConversation(id) {
-            this.fetchMessages(id);
+        openConversation: function openConversation() {
+            var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var userId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+            this.conversationUser = userId;
+            this.conversatioId = id;
+            this.fetchMessages(id, userId);
         }
     }
 });
@@ -51953,7 +51966,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     swapToListUsersComponent: function swapToListUsersComponent() {
       this.$emit('swap', 'chat-list-users');
     },
-    openConversation: function openConversation(id) {
+    openConversation: function openConversation() {
+      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
       this.$emit('openconversation', id);
     }
   }
@@ -52105,7 +52120,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -52133,6 +52148,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['conversation'],
+  created: function created() {
+    console.log(this.conversation);
+  },
+
   methods: {
     openConversation: function openConversation(id) {
       this.$emit('openconversation', id);
@@ -52163,9 +52182,13 @@ var render = function() {
       _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "media-body" }, [
-        _c("span", [_vm._v(_vm._s(_vm.conversation.participants.name))]),
+        _vm.conversation.participants[0]
+          ? _c("span", [_vm._v(_vm._s(_vm.conversation.participants[0].name))])
+          : _vm._e(),
         _vm._v(" "),
-        _c("p", [_vm._v(_vm._s(_vm.conversation.last_message.message))])
+        _vm.conversation.last_message
+          ? _c("p", [_vm._v(_vm._s(_vm.conversation.last_message.message))])
+          : _vm._e()
       ])
     ]
   )
@@ -52284,7 +52307,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -52333,21 +52356,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       axios.get('/get-users').then(function (response) {
+        console.log(response.data);
         _this.users = response.data;
       });
     },
     swapToListConversationsComponent: function swapToListConversationsComponent() {
       this.$emit('swap', 'chat-conversations');
     },
-    newConversation: function newConversation(id) {
-      axios.post('/create-conversation', {
-        userId: id
-      }).then(function (response) {
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error);
-      });
+    openConversation: function openConversation(userId) {
+      this.$emit('openconversation', null, userId);
     }
+
+    // newConversation(id){
+    //   axios.post('/create-conversation', {
+    //     userId: id,
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    // }
+
   }
 });
 
@@ -52396,7 +52427,7 @@ var render = function() {
                       staticClass: "btn btn-primary pull-right",
                       on: {
                         click: function($event) {
-                          return _vm.newConversation(user.id)
+                          return _vm.openConversation(user.id)
                         }
                       }
                     },
@@ -52522,7 +52553,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['messages', 'user'],
   mounted: function mounted() {
-    console.log(this.user);
+    console.log(this.messages);
   }
 });
 

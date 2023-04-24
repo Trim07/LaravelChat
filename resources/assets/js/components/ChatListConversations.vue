@@ -19,7 +19,7 @@ export default {
     swapToListUsersComponent() {
       this.$emit('swap', 'chat-list-users')
     },
-    openConversation(id){
+    openConversation(id = null){
       this.$emit('openconversation', id)
     }
   }

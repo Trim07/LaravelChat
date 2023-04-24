@@ -13,7 +13,7 @@
           </a>
         </div>
         <div class="media-body">
-          <h4 class="media-heading">{{user.name}} <button class="btn btn-primary pull-right" @click="newConversation(user.id)">+</button></h4>
+          <h4 class="media-heading">{{user.name}} <button class="btn btn-primary pull-right" @click="openConversation(user.id)">+</button></h4>
         </div>
       </div>
     </div>
@@ -33,6 +33,7 @@ export default {
   methods:{
     getUsers(){
       axios.get('/get-users').then(response => {
+        console.log(response.data)
         this.users = response.data
       });
     },
@@ -41,17 +42,21 @@ export default {
       this.$emit('swap', 'chat-conversations')
     },
 
-    newConversation(id){
-      axios.post('/create-conversation', {
-        userId: id,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    openConversation(userId){
+      this.$emit('openconversation', null, userId)
     }
+
+    // newConversation(id){
+    //   axios.post('/create-conversation', {
+    //     userId: id,
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    // }
   }
 }
 </script>

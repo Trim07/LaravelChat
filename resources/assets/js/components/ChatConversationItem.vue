@@ -6,8 +6,8 @@
       </a>
     </div>
     <div class="media-body">
-      <span>{{ conversation.participants.name }}</span>
-      <p>{{ conversation.last_message.message }}</p>
+      <span v-if="conversation.participants[0]">{{ conversation.participants[0].name }}</span>
+      <p v-if="conversation.last_message">{{ conversation.last_message.message }}</p>
     </div>
   </div>
 </template>
@@ -15,6 +15,9 @@
 <script>
 export default {
   props: ['conversation'],
+  created() {
+    console.log(this.conversation)
+  },
   methods: {
     openConversation(id){
       this.$emit('openconversation', id)
