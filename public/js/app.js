@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(7);
+var bind = __webpack_require__(6);
 var isBuffer = __webpack_require__(21);
 
 /*global toString:true*/
@@ -533,10 +533,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(9);
+    adapter = __webpack_require__(8);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(9);
+    adapter = __webpack_require__(8);
   }
   return adapter;
 }
@@ -607,7 +607,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 4 */
@@ -921,85 +921,6 @@ function applyToTag (styleElement, obj) {
 
 /***/ }),
 /* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(39);
-
-window._ = __webpack_require__(15);
-
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
-
-try {
-    window.$ = window.jQuery = __webpack_require__(17);
-
-    __webpack_require__(18);
-} catch (e) {}
-
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
-window.axios = __webpack_require__(19);
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
-
-var token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo'
-
-window.Pusher = __webpack_require__(38);
-
-Pusher.log = function (msg) {
-    console.log(msg);
-};
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: 'your-pusher-key',
-//     cluster: 'mt1',
-//     encrypted: true
-// });
-
-
-// resources/assets/js/bootstrap.js
-
-
-
-window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
-    broadcaster: 'pusher',
-    key: 'c6e057b928434d6c4662',
-    cluster: 'sa1',
-    encrypted: true
-});
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1017,7 +938,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1207,7 +1128,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1218,7 +1139,7 @@ var settle = __webpack_require__(24);
 var buildURL = __webpack_require__(26);
 var parseHeaders = __webpack_require__(27);
 var isURLSameOrigin = __webpack_require__(28);
-var createError = __webpack_require__(10);
+var createError = __webpack_require__(9);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(29);
 
 module.exports = function xhrAdapter(config) {
@@ -1394,7 +1315,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1419,7 +1340,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1431,7 +1352,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1457,15 +1378,15 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(14);
+__webpack_require__(13);
 module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -1475,17 +1396,9 @@ module.exports = __webpack_require__(66);
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(6);
+__webpack_require__(14);
 
 window.Vue = __webpack_require__(40);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-__webpack_require__(6);
 
 Vue.component('chat-conversations', __webpack_require__(44));
 Vue.component('chat-conversations-item', __webpack_require__(50));
@@ -1493,87 +1406,83 @@ Vue.component('chat-list-users', __webpack_require__(55));
 Vue.component('chat-messages', __webpack_require__(60));
 Vue.component('chat-form', __webpack_require__(63));
 
-var app = new Vue({
-    el: '#app',
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-    data: {
-        conversations: [],
-        messages: [],
-        currentComponent: 'chat-conversations',
-        currentChatChannel: null,
-        conversationUser: null,
-        conversatioId: null
-    },
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(39);
 
-    created: function created() {
-        var _this = this;
+window._ = __webpack_require__(15);
 
-        this.fetchConversations();
-        Echo.private('chat').listen('.messagesent', function (e) {
-            _this.messages.push({
-                message: e.message.message,
-                user: e.user
-            });
-            _this.fetchConversations();
-        });
-    },
+/**
+ * We'll load jQuery and the Bootstrap jQuery plugin which provides support
+ * for JavaScript based Bootstrap features such as modals and tabs. This
+ * code may be modified to fit the specific needs of your application.
+ */
+
+try {
+    window.$ = window.jQuery = __webpack_require__(17);
+
+    __webpack_require__(18);
+} catch (e) {}
+
+/**
+ * We'll load the axios HTTP library which allows us to easily issue requests
+ * to our Laravel back-end. This library automatically handles sending the
+ * CSRF token as a header based on the value of the "XSRF" token cookie.
+ */
+
+window.axios = __webpack_require__(19);
+
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+/**
+ * Next we will register the CSRF Token as a common header with Axios so that
+ * all outgoing HTTP requests automatically have it attached. This is just
+ * a simple convenience so we don't have to attach every token manually.
+ */
+
+var token = document.head.querySelector('meta[name="csrf-token"]');
+
+if (token) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+} else {
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+}
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+
+// import Echo from 'laravel-echo'
+
+window.Pusher = __webpack_require__(38);
+
+Pusher.log = function (msg) {
+    console.log(msg);
+};
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: 'your-pusher-key',
+//     cluster: 'mt1',
+//     encrypted: true
+// });
 
 
-    methods: {
-        fetchConversations: function fetchConversations() {
-            var _this2 = this;
-
-            axios.get('/conversations').then(function (response) {
-                _this2.conversations = response.data.conversations;
-            });
-        },
-        fetchMessages: function fetchMessages(chatId, userId) {
-            var _this3 = this;
-
-            axios.get('/messages', { params: { 'conversationId': chatId, 'userId': userId } }).then(function (response) {
-                console.log(response.data);
-                if (Object.keys(response.data.messages).length > 0 && response.data.messages[0].messages) {
-                    var messages = response.data.messages[0].messages;
-                    _this3.conversationUser = response.data.messages[0].participants[0].userId;
-                    for (var i = 0; i < Object.keys(messages).length; i++) {
-                        _this3.messages.push({
-                            message: messages[i].message,
-                            user: {
-                                'id': messages[i].chatParticipantId,
-                                'name': messages[i].name
-                            }
-                        });
-                    }
-                }
-            });
-        },
-        addMessage: function addMessage(message) {
-            var _this4 = this;
-
-            message.conversationUser = this.conversationUser;
-            message.conversationId = this.conversatioId;
-            this.messages.push(message);
-
-            axios.post('/messages', message).then(function (response) {
-                console.log(response.data);
-                _this4.fetchConversations();
-            });
-        },
+// resources/assets/js/bootstrap.js
 
 
-        swapComponent: function swapComponent(component) {
-            this.currentComponent = component;
-        },
 
-        openConversation: function openConversation() {
-            var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var userId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-            this.conversationUser = userId;
-            this.conversatioId = id;
-            this.fetchMessages(id, userId);
-        }
-    }
+window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
+    broadcaster: 'pusher',
+    key: 'c6e057b928434d6c4662',
+    cluster: 'sa1',
+    encrypted: true
 });
 
 /***/ }),
@@ -32190,7 +32099,7 @@ module.exports = __webpack_require__(20);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(7);
+var bind = __webpack_require__(6);
 var Axios = __webpack_require__(22);
 var defaults = __webpack_require__(3);
 
@@ -32225,9 +32134,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(12);
+axios.Cancel = __webpack_require__(11);
 axios.CancelToken = __webpack_require__(36);
-axios.isCancel = __webpack_require__(11);
+axios.isCancel = __webpack_require__(10);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -32380,7 +32289,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(10);
+var createError = __webpack_require__(9);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -32815,7 +32724,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(33);
-var isCancel = __webpack_require__(11);
+var isCancel = __webpack_require__(10);
 var defaults = __webpack_require__(3);
 var isAbsoluteURL = __webpack_require__(34);
 var combineURLs = __webpack_require__(35);
@@ -32975,7 +32884,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(12);
+var Cancel = __webpack_require__(11);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -51813,7 +51722,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
 
 /***/ }),
 /* 44 */
@@ -52549,11 +52458,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['messages', 'user'],
-  mounted: function mounted() {
-    console.log(this.messages);
+  methods: {
+    addMessage: function addMessage(data) {
+      this.$emit('messagesent', data);
+    }
   }
 });
 
@@ -52565,31 +52489,61 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "ul",
-    { staticClass: "chat" },
-    _vm._l(_vm.messages, function(message) {
-      return _c("li", { staticClass: "left clearfix" }, [
-        _c(
-          "div",
-          {
-            staticClass: "chat-body",
-            class: { "pull-right; text-right": _vm.user.id === message.user.id }
-          },
-          [
-            _c("p", [_c("strong", [_vm._v(_vm._s(message.user.name))])]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("p", [
-                _vm._v("\n          " + _vm._s(message.message) + "\n        ")
-              ])
-            ])
-          ]
-        )
-      ])
-    }),
-    0
-  )
+  return _c("div", { staticClass: "panel panel-default" }, [
+    _c("div", { staticClass: "panel-heading" }, [_vm._v("Chats")]),
+    _vm._v(" "),
+    _c("div", { staticClass: "panel-body" }, [
+      _c(
+        "ul",
+        { staticClass: "chat" },
+        _vm._l(_vm.messages, function(message) {
+          return _c("li", { staticClass: "left clearfix" }, [
+            _c(
+              "div",
+              {
+                staticClass: "chat-body",
+                class: {
+                  "pull-right; text-right": _vm.user.id === message.user.id
+                }
+              },
+              [
+                _c("p", [
+                  _c("strong", [
+                    _vm._v(
+                      _vm._s(message.user.name) + " " + _vm._s(message.user.id)
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("p", [
+                    _vm._v(
+                      "\n                  " +
+                        _vm._s(message.message) +
+                        "\n                "
+                    )
+                  ])
+                ])
+              ]
+            )
+          ])
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "panel-footer" },
+      [
+        _c("chat-form", {
+          attrs: { user: _vm.user },
+          on: { messagesent: _vm.addMessage }
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

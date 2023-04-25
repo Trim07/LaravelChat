@@ -13,9 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
-        <!-- resources/views/layouts/app.blade.php -->
 
-        <style>
          .chat {
              list-style: none;
              margin: 0;
@@ -52,12 +50,12 @@
             -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
             background-color: #555;
         }
-    </style>
 
     </style>
+    <script src="{{ asset('js/app.js') }}"></script>
 </head>
 <body>
-    <div id="app">
+    <div>
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
@@ -118,6 +116,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 </html>

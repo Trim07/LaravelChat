@@ -35,7 +35,7 @@ class SendMessage implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('chat');
+        return new PrivateChannel('chat.1');
     }
 
     public function broadcastAs()

@@ -17,6 +17,6 @@
 
 // routes/channels.php
 
-Broadcast::channel("chat", function ($user) {
+Broadcast::channel("chat.{conversationId}", function ($user) {
     return Auth::check();
 });
