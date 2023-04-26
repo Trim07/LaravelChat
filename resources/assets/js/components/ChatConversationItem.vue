@@ -1,5 +1,5 @@
 <template>
-  <div class="media" style="border: 1px solid gray; padding: 10px;" @click="openConversation(conversation.id)">
+  <div class="media" style="border: 1px solid gray; padding: 10px;" @click="openConversation(conversation.id, conversation.participants[0].userId)">
     <div class="media-left">
       <a href="#">
         <img class="media-object" src="https://down-br.img.susercontent.com/file/br-11134207-7qukw-lfid6l9qv0gu6f" style="width: 35px;">
@@ -19,8 +19,8 @@ export default {
     console.log(this.conversation)
   },
   methods: {
-    openConversation(id){
-      this.$emit('openconversation', id)
+    openConversation(id, userId){
+      this.$emit('openconversation', id, userId)
     }
   }
 }

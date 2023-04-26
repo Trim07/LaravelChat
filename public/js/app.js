@@ -51877,8 +51877,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     openConversation: function openConversation() {
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var userId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      this.$emit('openconversation', id);
+      this.$emit('openconversation', id, userId);
     }
   }
 });
@@ -52062,8 +52063,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
-    openConversation: function openConversation(id) {
-      this.$emit('openconversation', id);
+    openConversation: function openConversation(id, userId) {
+      this.$emit('openconversation', id, userId);
     }
   }
 });
@@ -52083,7 +52084,10 @@ var render = function() {
       staticStyle: { border: "1px solid gray", padding: "10px" },
       on: {
         click: function($event) {
-          return _vm.openConversation(_vm.conversation.id)
+          return _vm.openConversation(
+            _vm.conversation.id,
+            _vm.conversation.participants[0].userId
+          )
         }
       }
     },
@@ -52477,6 +52481,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     addMessage: function addMessage(data) {
       this.$emit('messagesent', data);
+    },
+    swapToListUsersComponent: function swapToListUsersComponent() {
+      this.$emit('swap', 'chat-conversations');
     }
   }
 });
@@ -52490,7 +52497,17 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "panel panel-default" }, [
-    _c("div", { staticClass: "panel-heading" }, [_vm._v("Chats")]),
+    _c("div", { staticClass: "panel-heading" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          on: { click: _vm.swapToListUsersComponent }
+        },
+        [_vm._v("Voltar")]
+      ),
+      _vm._v(" Chats")
+    ]),
     _vm._v(" "),
     _c("div", { staticClass: "panel-body" }, [
       _c(

@@ -28,11 +28,32 @@
                 currentChatChannel: null,
                 user: @json(Auth::user()),
                 conversationUser: null,
-                conversatioId: null,
+                conversationId: null,
             },
 
             created() {
                 this.fetchConversations();
+                Echo.join('chat.'+this.user.id)
+                    .here((users) => {
+                        console.log(users)
+                    })
+                    .joining((user) => {
+                        console.log(user.name);
+                    })
+                    .leaving((user) => {
+                        console.log(user.name);
+                    })
+                    .error((error) => {
+                        console.error(error);
+                    })
+                    .listen('.messagesent', (e) => {
+                        console.log(e)
+                        this.messages.push({
+                            message: e.message.message,
+                            user: e.participant1
+                        });
+                        this.fetchConversations();
+                    });
             },
 
             methods: {
@@ -62,7 +83,8 @@
 
                 addMessage(message) {
                     message.conversationUser = this.conversationUser;
-                    message.conversationId = this.conversatioId;
+                    message.conversationId = this.conversationId;
+                    console.log(this.conversationUser)
                     this.messages.push(message);
 
                     axios.post('/messages', message).then(response => {
@@ -72,24 +94,50 @@
                 },
 
                 swapComponent: function(component){
+                    if(component === 'chat-conversations'){
+                        this.fetchConversations();
+                    }
                     this.currentComponent = component;
                 },
 
                 openConversation(id = null, userId = null) {
-
                     this.conversationUser = userId;
-                    this.conversatioId = id;
+                    this.conversationId = id;
                     this.fetchMessages(id, userId);
+                    console.log(id, userId)
+                    if(this.conversationUser){
+                        // Echo.join('chat.'+this.conversationUser)
+                        //     .here((users) => {
+                        //         console.log(users)
+                        //     })
+                        //     .joining((user) => {
+                        //         console.log(user.name);
+                        //     })
+                        //     .leaving((user) => {
+                        //         console.log(user.name);
+                        //     })
+                        //     .error((error) => {
+                        //         console.error(error);
+                        //     })
+                        //     .listen('.messagesent', (e) => {
+                        //         console.log(e)
+                        //         this.messages.push({
+                        //             message: e.message.message,
+                        //             user: e.participant1
+                        //         });
+                        //         this.fetchConversations();
+                        //     });
 
-                    Echo.private('chat.'+this.conversatioId)
-                        .listen('.messagesent', (e) => {
-                            console.log(e)
-                            this.messages.push({
-                                message: e.message.message,
-                                user: e.user
+                        Echo.private('chat.'+this.conversationId)
+                            .listen('.messagesent', (e) => {
+                                console.log(e)
+                                this.messages.push({
+                                    message: e.message.message,
+                                    user: e.user
+                                });
+                                this.fetchConversations();
                             });
-                            this.fetchConversations();
-                        });
+                    }
                     this.swapComponent('chat-messages');
                 },
             }

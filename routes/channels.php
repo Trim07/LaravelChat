@@ -18,5 +18,7 @@
 // routes/channels.php
 
 Broadcast::channel("chat.{conversationId}", function ($user) {
-    return Auth::check();
+    if(Auth::check()){
+        return Auth::user()->toArray();
+    }
 });

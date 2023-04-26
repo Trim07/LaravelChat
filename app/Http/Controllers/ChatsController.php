@@ -41,10 +41,13 @@ class ChatsController extends Controller
     public function fetchMessages(Request $request)
     {
         try {
+            $user = Auth::user();
             if(!empty($request->conversationId)){
-                $messages = Chat::with(['participants' => function($query) {
+                $messages = Chat::with(['participants' => function($query)use($user) {
                     $query->join('users', 'users.id', '=', 'chat_participants.userId')
-                            ->select('chat_participants.*', 'users.name')->get();
+                            ->select('chat_participants.*', 'users.name')
+                            ->where('chat_participants.userId', '!=', $user->id)
+                            ->get();
                     }, 'messages' => function($query) {
                         $query->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
                             ->select('chat_messages.*', 'users.name')->orderBy('id', 'asc')->get();
@@ -52,7 +55,6 @@ class ChatsController extends Controller
                     ->where('id', $request->get('conversationId'))->get();
 
             }elseif(!empty($request->userId)){
-                $user = Auth::user();
                 $requestedUser = $request->userId;
                 $participation1 = ChatParticipants::where('userId', $user->id)->get()->pluck('chatId');
                 $participation2 = ChatParticipants::where('userId', $request->userId)->get()->pluck('chatId');
@@ -93,27 +95,25 @@ class ChatsController extends Controller
     public function sendMessage(Request $request)
     {
         try {
-            $user = Auth::user();
-            $participation1 = ChatParticipants::where('userId', $user->id)->get()->pluck('chatId');
-            $participation2 = ChatParticipants::where('userId', $request->conversationUser)->get()->pluck('chatId');
-            $checkIfConversationExists = array_values(array_intersect($participation1->toArray(), $participation2->toArray()));
+            $participant1 = Auth::user();
+            $participant2 = User::find($request->conversationUser);
             $conversationId = $request->input('conversationId', null);
 
-            if(empty($checkIfConversationExists)){
+            if(empty($conversationId)){
                 $conversation = Chat::create();
-                ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $user->id]);
-                ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $request->get('conversationUser')]);
+                ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $participant1->id]);
+                ChatParticipants::create(['chatId' => $conversation->id, 'userId' => $participant2->id]);
                 $conversationId = $conversation->id;
             }
 
             $message = ChatMessages::create([
                 'type' => "text",
                 'chatId' => $conversationId,
-                'chatParticipantId' => $user->id,
+                'chatParticipantId' => $participant1->id,
                 'message' => $request->input('message')
-            ]);
+            ]);;
 
-            broadcast(new SendMessage($user, $message))->toOthers();
+            broadcast(new SendMessage($participant1, $participant2, $message))->toOthers();
 
             return ['status' => 'Message Sent!'];
         }catch (\Exception $e){

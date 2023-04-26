@@ -2,7 +2,7 @@
 
 <template>
   <div class="panel panel-default">
-    <div class="panel-heading">Chats</div>
+    <div class="panel-heading"><button class="btn btn-primary" @click="swapToListUsersComponent">Voltar</button> Chats</div>
     <div class="panel-body">
         <ul class="chat">
           <li class="left clearfix" v-for="message in messages">
@@ -34,7 +34,10 @@ export default {
   methods: {
     addMessage(data){
       this.$emit('messagesent', data);
-    }
+    },
+    swapToListUsersComponent() {
+      this.$emit('swap', 'chat-conversations')
+    },
   }
 };
 </script>
