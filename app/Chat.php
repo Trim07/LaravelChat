@@ -31,5 +31,15 @@ class Chat extends Model
             ->orderBy('chat_messages.id', 'desc');
     }
 
+    public function unreadMessages()
+    {
+        return $this->messages()->where('read', 'N');
+    }
+
+    public function updateUnreadMessages()
+    {
+        return $this->unreadMessages()->where('chatId', $this->id)->update(['read' => 'Y']);
+    }
+
 
 }

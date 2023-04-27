@@ -52100,7 +52100,19 @@ var render = function() {
           : _vm._e(),
         _vm._v(" "),
         _vm.conversation.last_message
-          ? _c("p", [_vm._v(_vm._s(_vm.conversation.last_message.message))])
+          ? _c("p", [
+              _vm._v(_vm._s(_vm.conversation.last_message.message)),
+              _vm.conversation.unread_messages_count > 0
+                ? _c(
+                    "span",
+                    {
+                      staticClass: "btn btn-primary badge",
+                      staticStyle: { float: "right" }
+                    },
+                    [_vm._v(_vm._s(_vm.conversation.unread_messages_count))]
+                  )
+                : _vm._e()
+            ])
           : _vm._e()
       ])
     ]

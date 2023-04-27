@@ -40,6 +40,7 @@ class CreateTablesForLiveChat extends Migration
             $table->timestamps();
             $table->text('message');
             $table->string('type')->default('text');
+            $table->string('read', 1)->default('N');
 
             $table->integer('chatParticipantId')->unsigned()->nullable();
             $table->foreign('chatParticipantId')

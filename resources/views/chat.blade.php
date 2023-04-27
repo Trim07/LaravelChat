@@ -47,10 +47,10 @@
                 },
                 fetchMessages(chatId, userId) {
                     axios.get('/messages', {params: {'conversationId': chatId, 'userId': userId}}).then(response => {
-                        console.log(response.data)
-                        if(Object.keys(response.data.messages).length > 0 && response.data.messages[0].messages){
-                            let messages = response.data.messages[0].messages;
-                            this.conversationUser = response.data.messages[0].participants[0].userId
+                        console.log(response.data.messages.messages)
+                        if(Object.keys(response.data.messages).length > 0 && response.data.messages.messages){
+                            let messages = response.data.messages.messages;
+                            this.conversationUser = response.data.messages.participants[0].userId
                             for (let i = 0; i < Object.keys(messages).length; i++) {
                                 this.messages.push({
                                     message: messages[i].message,

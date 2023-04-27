@@ -7,7 +7,7 @@
     </div>
     <div class="media-body">
       <span v-if="conversation.participants[0]">{{ conversation.participants[0].name }}</span>
-      <p v-if="conversation.last_message">{{ conversation.last_message.message }}</p>
+      <p v-if="conversation.last_message">{{ conversation.last_message.message }}<span class="btn btn-primary badge" style="float: right" v-if="conversation.unread_messages_count > 0">{{conversation.unread_messages_count}}</span></p>
     </div>
   </div>
 </template>

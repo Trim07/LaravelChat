@@ -31,7 +31,7 @@ class ChatsController extends Controller
                 $query->join('users', 'users.id', '=', 'chat_participants.userId')
                     ->select('chat_participants.*', 'users.name')
                     ->where('users.id', '!=', $user->id)->get();
-            }, 'last_message'])->whereIn('id', $chat_participations->pluck('chatId'))->get();
+            }, 'last_message'])->withCount('unreadMessages')->whereIn('id', $chat_participations->pluck('chatId'))->get();
 
             return compact('conversations');
         }catch (\Exception $e){
@@ -53,10 +53,9 @@ class ChatsController extends Controller
                         $query->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
                             ->select('chat_messages.*', 'users.name')->orderBy('id', 'asc')->get();
                     }])
-                    ->where('id', $request->get('conversationId'))->get();
+                    ->where('id', $request->get('conversationId'))->first();
 
             }elseif(!empty($request->userId)){
-                $requestedUser = $request->userId;
                 $participation1 = ChatParticipants::where('userId', $user->id)->get()->pluck('chatId');
                 $participation2 = ChatParticipants::where('userId', $request->userId)->get()->pluck('chatId');
                 $checkIfConversationExists = array_values(array_intersect($participation1->toArray(), $participation2->toArray()));
@@ -64,15 +63,14 @@ class ChatsController extends Controller
                 $messages = Chat::with(['participants' => function($query) {
                     $query->join('users', 'users.id', '=', 'chat_participants.userId')
                         ->select('chat_participants.*', 'users.name')->get();
-                    }, 'messages' => function($query) use($requestedUser) {
+                    }, 'messages' => function($query) {
                         $query->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
                             ->select('chat_messages.*', 'users.name')->orderBy('id', 'asc')->get();
-                    }])->where('id', $checkIfConversationExists[0])->get();
+                    }])->where('id', $checkIfConversationExists[0])->first();
             }
 
-//            $messages = ChatMessages::with('participants')
-//                ->join('users', 'users.id', '=', 'chat_messages.chatParticipantId')
-//                ->where('chatId', $request->get('chatId'))->get();
+            $messages->updateUnreadMessages();
+
             return compact('messages');
         }catch (\Exception $e){
             dd($e->getMessage());
@@ -111,7 +109,8 @@ class ChatsController extends Controller
                 'type' => "text",
                 'chatId' => $conversationId,
                 'chatParticipantId' => $participant1->id,
-                'message' => $request->input('message')
+                'message' => $request->input('message'),
+                'read' => 'N',
             ]);
 
             broadcast(new SendMessage($participant1, $participant2, $message))->toOthers();
@@ -121,5 +120,9 @@ class ChatsController extends Controller
         }catch (\Exception $e){
             dd($e->getMessage());
         }
+    }
+
+    public function readMessage(Request $request){
+
     }
 }
