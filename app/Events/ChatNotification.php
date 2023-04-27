@@ -4,7 +4,6 @@ namespace App\Events;
 
 use App\ChatMessages;
 use App\User;
-use http\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SendMessage implements ShouldBroadcast
+class ChatNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,25 +25,20 @@ class SendMessage implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $participant1, User $participant2, $message)
+    public function __construct(User $participant1, User $participant2, ChatMessages $message)
     {
         $this->participant1 = $participant1;
         $this->participant2 = $participant2;
         $this->message = $message;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new PrivateChannel("chat.{$this->message->chatId}");
+        return new PrivateChannel("notification");
     }
 
     public function broadcastAs()
     {
-        return 'messagesent';
+        return 'chatnotification';
     }
 }

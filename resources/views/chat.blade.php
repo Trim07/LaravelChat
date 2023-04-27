@@ -33,26 +33,9 @@
 
             created() {
                 this.fetchConversations();
-                Echo.join('chat.'+this.user.id)
-                    .here((users) => {
-                        console.log(users)
-                    })
-                    .joining((user) => {
-                        console.log(user.name);
-                    })
-                    .leaving((user) => {
-                        console.log(user.name);
-                    })
-                    .error((error) => {
-                        console.error(error);
-                    })
-                    .listen('.messagesent', (e) => {
-                        console.log(e)
-                        this.messages.push({
-                            message: e.message.message,
-                            user: e.participant1
-                        });
-                        this.fetchConversations();
+                Echo.private('notification')
+                    .listen('.chatnotification', (e) => {
+                        this.fetchConversations()
                     });
             },
 
@@ -130,10 +113,9 @@
 
                         Echo.private('chat.'+this.conversationId)
                             .listen('.messagesent', (e) => {
-                                console.log(e)
                                 this.messages.push({
                                     message: e.message.message,
-                                    user: e.user
+                                    user: e.participant1
                                 });
                                 this.fetchConversations();
                             });

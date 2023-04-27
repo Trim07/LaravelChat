@@ -52524,13 +52524,7 @@ var render = function() {
                 }
               },
               [
-                _c("p", [
-                  _c("strong", [
-                    _vm._v(
-                      _vm._s(message.user.name) + " " + _vm._s(message.user.id)
-                    )
-                  ])
-                ]),
+                _c("p", [_c("strong", [_vm._v(_vm._s(message.user.name))])]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("p", [

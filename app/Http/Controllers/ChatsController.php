@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Chat;
 use App\ChatMessages;
 use App\ChatParticipants;
+use App\Events\ChatNotification;
 use App\Events\SendMessage;
 use App\User;
 use Illuminate\Http\Request;
@@ -111,9 +112,10 @@ class ChatsController extends Controller
                 'chatId' => $conversationId,
                 'chatParticipantId' => $participant1->id,
                 'message' => $request->input('message')
-            ]);;
+            ]);
 
             broadcast(new SendMessage($participant1, $participant2, $message))->toOthers();
+            broadcast(new ChatNotification($participant1, $participant2, $message))->toOthers();
 
             return ['status' => 'Message Sent!'];
         }catch (\Exception $e){
